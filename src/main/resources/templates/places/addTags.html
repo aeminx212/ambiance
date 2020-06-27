@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th='http://www.thymeleaf.org/'>
+
+<head th:replace="fragments :: head">
+    <div th:replace="fragments :: src"></div>
+</head>
+<body class="container">
+<img th:replace= "fragments :: logo">
+<nav th:replace="fragments :: navigation" ></nav>
+<h1 th:replace= "fragments :: styledHeader"></h1>
+
+
+<form method="post">
+    <div class="form-group" id="myTags">
+        <input type="hidden" name= "userPlacesTagDTO" th:field="${userPlacesTagDTO.userPlaces}">
+        <p>Select the tags you would like to add or create a new tag for this place. Other tags can be
+            added afterward on this page or check out the options on the Manage Tags page.</p>
+        <div class="inputGalleryContainer">
+        <div th:if="${userPlacesTagDTO.tagsToAdd} and ${userPlacesTagDTO.tagsToAdd.size()}" th:each="tag : ${userPlacesTagDTO.tagsToAdd}">
+            <div class="form-group">
+                <div class="galleryInput">
+                <label>
+                    <input type="checkbox" name="tagIds" th:value="${tag.id}" class="form=control"/>
+                    <span th:text="${tag.name}"></span>
+                </label>
+                </div>
+            </div>
+        </div>
+        </div>
+        <div th:if="${userPlacesTagDTO.tagsToAdd} and ${userPlacesTagDTO.tagsToAdd.size()}">
+            <input type="submit" value="Add Tags!" class="btn btn-primary">
+        </div>
+        <p th:unless="${userPlacesTagDTO.tagsToAdd} and ${userPlacesTagDTO.tagsToAdd.size()}">It appears that you don't have any tags yet. Create some!</p>
+
+    </div>
+
+</form>
+
+<a th:href="@{../createTagsWithPlaceSelected(userPlacesId=${userPlacesTagDTO.userPlaces.getId()})}" >Create and Add New Tag</a>
+
+</body>
+</html>

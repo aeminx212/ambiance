@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th='http://www.thymeleaf.org/'>
+<head>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+    <meta charset="utf-8">
+    <title>Amibance</title>
+    <link rel="stylesheet" th:href="@{/mapStyles.css}">
+    <div th:replace="fragments :: src"></div>
+</head>
+<body class="container">
+<img th:replace= "fragments :: logo">
+<nav th:replace="fragments :: navigation" ></nav>
+<h1 th:replace= "fragments :: styledHeader" ></h1>
+<p>In the search box, you can search for the name of the place or type of places.</br>
+    Click the gray icon to add the place to your favorites. </br>
+    After you have confirmed the associated questions, the place will show up as a red marker on your dashboard.
+</p>
+<input id="pac-input" class="controls" type="text" placeholder="Search Box">
+<div id="map"></div>
+<script>
+    // This example adds a search box to a map, using the Google Place Autocomplete
+    // feature. People can enter geographical searches. The search box will return a
+    // pick list containing a mix of places and predicted search terms.
+
+    function initAutocomplete(listener) {
+        var map = new google.maps.Map(document.getElementById('map'), {
+            center: {lat: 38.624691, lng: -90.1847763},
+            zoom: 13,
+            mapTypeId: 'roadmap'
+        });
+
+        // Create the search box and link it to the UI element.
+        var input = document.getElementById('pac-input');
+        var searchBox = new google.maps.places.SearchBox(input);
+        map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
+
+        // Bias the SearchBox results towards current map's viewport.
+        map.addListener('bounds_changed', function () {
+            searchBox.setBounds(map.getBounds());
+        });
+
+        var markers = [];
+        // Listen for the event fired when the user selects a prediction and retrieve
+        // more details for that place.
+        searchBox.addListener('places_changed', function () {
+            var places = searchBox.getPlaces();
+
+            if (places.length == 0) {
+                return;
+            }
+
+            // Clear out the old markers.
+            markers.forEach(function (marker) {
+                marker.setMap(null);
+            });
+            markers = [];
+            websites = [];
+
+            // For each place, get the icon, name and location.
+            var bounds = new google.maps.LatLngBounds();
+            places.forEach(function (place) {
+                if (!place.geometry) {
+                    console.log("Returned place contains no geometry");
+                    return;
+                }
+
+                var icon = {
+                    url: place.icon,
+                    size: new google.maps.Size(71, 71),
+                    origin: new google.maps.Point(0, 0),
+                    anchor: new google.maps.Point(17, 34),
+                    scaledSize: new google.maps.Size(25, 25)
+                };
+
+                // Create a marker for each place.
+                markers.push(new google.maps.Marker({
+                    map: map,
+                    icon: icon,
+                    title: place.name,
+                    position: place.geometry.location
+                }));
+
+                var webFinder = {
+                    name: place.geometry.location,
+                    website: place.website,
+                    phone: place.formatted_phone_number
+                };
+
+                websites.push(webFinder);
+
+                if (place.geometry.viewport) {
+                    // Only geocodes have viewport.
+                    bounds.union(place.geometry.viewport);
+                } else {
+                    bounds.extend(place.geometry.location);
+                }
+            });
+
+            map.fitBounds(bounds);
+
+            // Markers listen for click and the map centers and zooms in on the marker
+            // After click ajax sent to collect data and confirm selection added to userPlaces
+
+            var web;
+            var ph;
+
+            markers.forEach(function(marker){
+                marker.addListener('click', function(){
+                    map.setZoom(14);
+                    let position = marker.getPosition();
+                    map.setCenter(position);
+                    websites.forEach(function(webFinder){
+                        if (webFinder.name.equals(marker.getPosition())){
+                            if (!webFinder.website){
+                                web = "No website available";
+                            }else{
+                                web = webFinder.website;
+                            }
+                            if (!webFinder.phone){
+                                ph = "No phone number available";
+                            }else{
+                                ph = webFinder.phone;
+                            }
+                        };
+                    });
+
+                    var place = {
+                        "name" : marker.getTitle(),
+                        "numLat" : position.lat(),
+                        "numLng" : position.lng(),
+                        "url" : web,
+                        "phone" : ph
+                    };
+                    var page = "";
+                    if (confirm("Do you want to add " + place.name + " to your favorites?")){
+
+                        $.ajax({
+                            type : "POST",
+                            dataType : 'text',
+                            url : "searchMap2",
+                            data : place,
+                            success : function(result) {
+                                if (result == "The place that you have selected has already been added to your list.") {
+                                    page = "searchMap";
+                                }
+
+                                if (confirm(result)) {
+                                    $.ajax({
+                                        type: "GET",
+                                        dataType: 'text',
+                                        url: "preparingToAddTags",
+                                        data: place,
+                                        success: function (nextResult) {
+                                            if(page != "searchMap"){
+                                                page = nextResult;
+                                            }
+                                            window.location.href = page;
+                                        }
+                                    });
+                                }
+
+                            }
+
+                    });
+            }
+        });
+    });
+    });
+    }
+</script>
+
+<script src="https://maps.googleapis.com/maps/api/js?key={YOUR GOOGLE MAPS KEY}&libraries=places,geometry&callback=initAutocomplete"
+        async defer></script>
+
+</body>
+</html>

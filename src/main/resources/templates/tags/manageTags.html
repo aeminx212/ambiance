@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th='http://www.thymeleaf.org/'>
+<head th:replace="fragments :: head">
+    <div th:replace="fragments :: src"></div>
+</head>
+<body class="container">
+<img th:replace= "fragments :: logo">
+<nav th:replace="fragments :: navigation" ></nav>
+<h1 th:replace= "fragments :: styledHeader"></h1>
+<nav class="navbar navbar-expand-sm bg-dark justify-content-center">
+    <ul class="nav">
+        <li class="nav-item"><a class="nav-link" href="/tags/addTagsToPlaces">Add Tags to Your Places</a></li>
+        <li class="nav-item"><a class="nav-link" href="/tags/createTag">Create a New Tag</a></li>
+        <li class="nav-item"><a class="nav-link" href="/tags/editTags">Edit Tags</a></li>
+        <li class="nav-item"><a class="nav-link" href="/tags/deleteTags">Delete Tags</a></li>
+    </ul>
+</nav>
+<form method="post" id="form1" name="form1">
+    <h2>Your Tags</h2>
+    <p>Click a button to see the places associated with the tag.</p>
+    <div class="inputGalleryContainer">
+<th:block th:each="tag : ${tags}">
+    <div class="galleryInput">
+            <label>
+                <input type="submit" form="form1" id="${tag.id}" name="tagName" th:value="${tag.name}" class="btn btn-primary"/>
+            </label>
+        </div>
+    </th:block>
+    </div>
+</form>
+
+<th:block th:if="${placesToDisplay.size() > 0}" >
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th scope="col" class="h2" >All places associated with tag:</th>
+            <th scope="col" class="h2" th:text="${oldTagName}"></th>
+        </tr>
+        </thead>
+        <tbody th:each="place :${placesToDisplay}">
+        <tr>
+            <td class="h5" th:text="${place}"></td>
+        </tr>
+        </tbody>
+    </table>
+</th:block>
+
+</body>
+</html>

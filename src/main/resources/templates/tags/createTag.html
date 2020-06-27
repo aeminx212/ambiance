@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th='http://www.thymeleaf.org/'>
+<head th:replace="fragments :: head">
+    <div th:replace="fragments :: src"></div>
+</head>
+<body class="container">
+<img th:replace= "fragments :: logo">
+<nav th:replace="fragments :: navigation"></nav>
+<h1 th:replace= "fragments :: styledHeader"></h1>
+<form method="post" >
+    <h2>Your Tags</h2>
+    <div class="form-group">
+        <th:block th:each="oldTag : ${oldTags}">
+            <div class="form-group">
+                <label>
+                    <span th:text="${oldTag.name}"></span>
+                </label>
+            </div>
+        </th:block>
+
+        <label>New Tag Name
+            <input th:field="${tag.name}" class="form-control"/>
+        </label>
+        <p class="error" th:errors="${tag.name}"></p>
+    </div>
+    <div>
+        <input type="submit" value="Create a Tag!" class="btn btn-primary"/>
+    </div>
+</form>
+
+</body>
+</html>

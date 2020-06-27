@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th='http://www.thymeleaf.org/'>
+<head th:replace="fragments :: head">
+    <div th:replace="fragments :: src"></div>
+</head>
+<body class="container">
+<form method="post" >
+    <img th:replace= "fragments :: logo">
+    <nav th:replace="fragments :: navigation"></nav>
+    <h1 th:replace= "fragments :: styledHeader"></h1>
+    <div class="form-group" th:if="${tags != null and not #lists.isEmpty(tags)}">
+        <label>Tag Id to Edit
+            <select name="tagToEdit" class="form-control">
+                <option th:each="theTag : ${tags}"
+                        th:value="${theTag.id}"
+                        th:text="${theTag.name}"
+                ></option>
+            </select>
+        </label>
+        <label>New Name
+            <input th:field="${tagDTO.name}" class="form-control">
+        </label>
+        <span class="error" th:errors="${tagDTO.name}"></span>
+    </div>
+    <div class="form-group">
+        <input type="submit" value="Update Tag!" class="btn btn-primary">
+    </div>
+</form>
+
+</body>
+</html>

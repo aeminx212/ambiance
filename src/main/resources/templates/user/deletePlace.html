@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th='http://www.thymeleaf.org/'>
+
+<head th:replace="fragments :: head">
+    <div th:replace="fragments :: src"></div>
+</head>
+<body class="container">
+<img th:replace= "fragments :: logo">
+<h1 th:replace= "fragments :: styledHeader"></h1>
+<nav th:replace="fragments :: navigation" ></nav>
+
+<form method="post" th:action="@{/user/deletePlace}">
+    <input type="hidden" name= "userPlacesDTO" th:field="${userPlacesDTO.userPlaces}">
+    <th:block th:if="${userPlacesDTO.userPlaces.place}">
+        <div class="form-group">
+            <label>
+                <h2>Delete</h2>
+                <h2 th:text="${userPlacesDTO.userPlaces.place.name}"></h2>
+                <p>If you do <em>not</em> want to delete this place, then use the navigation links at the top of the page.</p>
+            </label>
+        </div>
+        <button type="submit" class="btn btn-danger">Delete</button>
+    </th:block>
+
+</form>
+
+</body>
+</html>

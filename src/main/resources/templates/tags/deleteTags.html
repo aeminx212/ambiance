@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th='http://www.thymeleaf.org/'>
+<head th:replace="fragments :: head">
+    <div th:replace="fragments :: src"></div>
+</head>
+<body class="container">
+<img th:replace= "fragments :: logo">
+<nav th:replace="fragments :: navigation" ></nav>
+<h1 th:replace= "fragments :: styledHeader"></h1>
+<p>Select the tag(s) that you would like to delete.</p>
+<form method="post" >
+    <div class="form-group">
+    <th:block th:if="${tags} and ${tags.size()}" th:each="tag : ${tags}">
+        <div class="form-group">
+            <label>
+                <span th:text="${tag.name}"></span>
+                <input type="checkbox" name="tagIds" th:value="${tag.id}" class="form=control">
+            </label>
+        </div>
+    </th:block>
+    </div>
+    <input type="submit" value="Delete" class="btn btn-danger">
+</form>
+
+</body>
+</html>

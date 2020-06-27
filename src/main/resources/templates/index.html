@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th='http://www.thymeleaf.org/'>
+<head th:replace="fragments :: head">
+    <div th:replace="fragments :: src"></div>
+</head>
+<body class="container">
+<img th:replace= "fragments :: logo">
+<h1 th:replace= "fragments :: styledHeader"></h1>
+<div class="form-group col text-center">
+    <p class="noLowerPadding">Experience is what makes us.</p>
+    <h2 class="display-4">Find yourself where you want to be.</h2>
+    <img src="/images/drinks.png" class="img-fluid mx-auto d-block ">
+    <p class="bigger">Ambiance helps you to curate your experiences based on your preferences.</p>
+    <p class="lead"> First, create an account. Then, simply use the navigation icon to go to the Search Map page. Type in a place that you love or would like to visit. Ambiance finds it on the map.
+        Next, it walks you through saving and adding personalized tags. Tags help you filter your options on your dashboard. Next time you are trying
+        to figure out where you want to eat or drink just head to your dashboard and use the tag buttons to help you narrow down your options.
+    </p>
+    <p class="lead">
+        If you want to find new spots around St. Louis, use the navigation icon to check out the Latest News.
+        You might want to add a tag called something like "New Places" to remind you of options you haven't checked out yet.
+    </p>
+</div>
+
+<form th:action="@{/login}" method="get">
+    <div class="form-group col text-center">
+        <input type="submit" class="btn btn-primary center" value="Register or Log In">
+    </div>
+</form>
+</body>
+</html>

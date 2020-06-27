@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th='http://www.thymeleaf.org/'>
+<head th:replace="fragments :: head">
+    <div th:replace="fragments :: src"></div>
+</head>
+<body class="container">
+<img th:replace= "fragments :: logo">
+<nav th:replace="fragments :: navigation" ></nav>
+<h1 th:replace= "fragments :: styledHeader"></h1>
+<p>Select tags and places you would like to associate.</p>
+<form method="post" >
+    <h2 class="fancyTitle" th:text="${tagsTitle}"></h2>
+    <div class="inputGalleryContainer">
+
+    <th:block th:if="${tags} and ${tags.size()}" th:each="tag : ${tags}">
+        <div class="form-group">
+            <div class="galleryInput">
+            <label>
+                <input type="checkbox" name="tagIds" th:value="${tag.id}" class="form=control">
+                <span class="h5" th:text="${tag.name}"></span>
+            </label>
+            </div>
+        </div>
+    </th:block>
+    </div>
+
+    <div class="p-3 mb-2 bg-dark "></div>
+
+    <h2 class="fancyTitle" th:text="${placesTitle}"></h2>
+    <div class="inputGalleryContainer">
+    <th:block th:if="${places} and ${places.size()}" th:each="place : ${places}">
+        <div class="form-group">
+            <div class="galleryInput">
+            <label>
+                <input type="checkbox" name="placeIds" th:value="${place.id}" class="form=control">
+                <span class="h5" th:text="${place.name}"></span>
+            </label>
+            </div>
+        </div>
+    </th:block>
+    </div>
+    <input type="submit" value="Add Tags!" class="btn btn-primary">
+</form>
+
+</body>
+</html>

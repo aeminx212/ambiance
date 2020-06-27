@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th='http://www.thymeleaf.org/'>
+<head>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+    <meta charset="utf-8">
+    <title>Dashboard</title>
+    <link rel="stylesheet" th:href="@{/mapStyles.css}">
+    <div th:replace="fragments :: src"></div>
+
+</head>
+<body class="container">
+<img th:replace= "fragments :: logo">
+<nav th:replace="fragments :: navigation" ></nav>
+<h1 th:replace= "fragments :: styledHeader"></h1>
+<p>Click a marker to get more info. Click the map to reposition and see all of your markers again.</p>
+<div id="map"></div>
+<script>
+    var markers = [];
+    var markersData = [];
+    var map;
+    var previousTagIds = [];
+    function initMap() {
+
+        map = new google.maps.Map(document.getElementById('map'), {
+            center: {lat: 38.624691, lng: -90.1847763},
+            zoom: 13,
+            mapTypeId: 'roadmap'
+        });
+
+        // Creates a marker for each myPlaces
+        $.ajax({
+            type : "GET",
+            dataType : 'json',
+            url : "populateMarkers",
+            success : function(result) {
+                for (i=0; i < result.length; i++){
+                    let latLng = {lat: parseFloat(result[i].numLat), lng: parseFloat(result[i].numLng)};
+                    let placeName = result[i].name;
+                    let placeUrl = result[i].url;
+                    let placePhone = result[i].phone;
+
+                    var markerData= {
+                        "position" : latLng,
+                        "tags" : result[i].placeTags,
+                        "title" : placeName,
+                        "url" : placeUrl,
+                        "phone" : placePhone
+                    };
+
+                    var aMarker = new google.maps.Marker({
+                        position: latLng,
+                        map: map,
+                        title: placeName,
+                    });
+                    markers.push(aMarker);
+                    markersData.push(markerData);
+                }
+
+                //sets bounds of map to fit markers
+                if(markers.length > 0){
+                    var newBoundary = new google.maps.LatLngBounds();
+                    for (each in markers){
+                        var position = markers[each].position;
+                        newBoundary.extend(position);
+                    }
+                    map.fitBounds(newBoundary);
+                }
+                var mapFitAll = map.zoom;
+                var mapCenterFitAll = map.center;
+
+
+                //allows to click the map and see all markers
+                map.addListener('click', function(){
+                    map.setZoom(mapFitAll);
+                    map.setCenter(mapCenterFitAll);
+                });
+
+                // Markers listen for click and the map centers and zooms in on the marker
+                // generates pop-up with place data and delete option
+                markers.forEach(function(marker){
+                    marker.addListener('click', function(){
+                        infoWindow = new google.maps.InfoWindow();
+                        map.setZoom(14);
+                        let position = marker.getPosition();
+                        map.setCenter(position);
+                        let web;
+                        let ph;
+                        for (j = 0; j < markersData.length; j++){
+                            var webString;
+                            var phString;
+                            var placeDelete;
+                            if(marker.position.lat() == markersData[j].position.lat && marker.position.lng() == markersData[j].position.lng){
+                                web = markersData[j].url;
+                                ph = markersData[j].phone;
+                                let latParam =  markersData[j].position.lat;
+                                let lngParam = markersData[j].position.lng;
+                                placeDelete = '<a class="pop" href="/user/deletePlace/' + latParam + '/' + lngParam +'">'+ 'Delete '+ markersData[j].title + ' ?' + '</a>';
+                                if (web == "No website available"){
+                                    webString = "No website available";
+                                }else{
+                                    webString = '<a class="pop" href="' + web + '">' + markersData[j].title + ' Website' + '</a>';
+                                }
+                                if (ph == "No phone number available"){
+                                    phString = "No phone number available";
+                                }else{
+                                    phString = 'ph: '+ ph;
+                                }
+                                infoWindow.setContent(markersData[j].title + '<br/>' + phString + '<br/>' + webString +'<br/>'+ placeDelete);
+                                infoWindow.open(map, this);
+                            }
+                        }
+                    });
+                });
+            }
+        });
+    }
+</script>
+<div class="inputGalleryContainer ">
+    <div id="myTags" th:if="${existingTags} and ${existingTags.size()}" th:each="tag : ${existingTags}">
+        <div class="galleryInput">
+            <label>
+                <input type="button" th:onclick="|filterWithTags(${tag.id})|" id="${tag.id}" th:value="${tag.name}" class="btn btn-primary"/>
+            </label>
+        </div>
+    </div>
+</div>
+
+<div id="Undo"class="form-group">
+    <input type="button" th:onclick="|undoLast()|" value="Undo Last" class="btn btn-info"/>
+</div>
+
+<div id="clearMarkers"class="form-group">
+    <input type="button" th:onclick="|clearAllMarkers()|" value="Clear All Markers" class="btn btn-dark"/>
+</div>
+
+<div id="seeAllMarkers"class="form-group">
+    <input type="button" th:onclick="|initMap()|" value="See All Markers" class="btn btn-success"/>
+</div>
+
+
+
+<script>
+    function filterWithTags(tagId){
+        previousTagIds.push(tagId);
+        console.log(tagId);
+        $.ajax({
+            type : "POST",
+            dataType : 'json',
+            contentType:"text/plain",
+            url : "selectedPlaces",
+            data : tagId.toString(),
+            success : function(placesToDelete) {
+                for (i=0; i < placesToDelete.length; i++){
+                    for (j=0; j< markers.length; j++){
+                        let pLat = parseFloat(placesToDelete[i].numLat);
+                        let pLng = parseFloat(placesToDelete[i].numLng);
+                        if(markers[j].position.lat() == pLat && markers[j].position.lng()== pLng){
+                            console.log(markers[j].title);
+                            markers[j].setMap(null);
+                        }
+                    }
+                }
+
+            }
+        });
+    }
+</script>
+
+<script>
+    function undoLast(){
+        var markersToAdd = [];
+        let findEnd = previousTagIds.length;
+        let priorTag = previousTagIds[findEnd-2];
+        let lastTag = previousTagIds[findEnd-1];
+        console.log(lastTag);
+        for(i=0; i < markersData.length; i++){
+            let tags = markersData[i].tags;
+            if(priorTag != null) {
+                if (tags.includes(lastTag)) {
+                }else{
+                    if(tags.includes(priorTag)){
+                        markersToAdd.push(markersData[i]);
+                    }
+                }
+            }else if (!(tags.includes(lastTag))){
+                markersToAdd.push(markersData[i]);
+            }
+        }
+        previousTagIds.pop();
+        for( k = 0; k< markersToAdd.length; k++){
+            var aMarker = new google.maps.Marker({
+                position: markersToAdd[k].position,
+                map: map,
+                title: markersToAdd[k].title
+            });
+            markers.push(aMarker);
+            console.log(aMarker.title);
+        }
+    }
+</script>
+
+<script>
+    function clearAllMarkers(){
+        for (k=0; k< markers.length; k++){
+            markers[k].setMap(null);
+        }
+    }
+</script>
+
+<script async defer
+        src="https://maps.googleapis.com/maps/api/js?key={YOUR GOOGLE MAPS KEY}&libraries=places,geometry&callback=initMap">
+</script>
+
+</body>
+</html>

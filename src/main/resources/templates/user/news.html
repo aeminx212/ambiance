@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th='http://www.thymeleaf.org/'>
+<head th:replace="fragments :: head">
+    <div th:replace="fragments :: src"></div>
+</head>
+<body class="container">
+<img th:replace= "fragments :: logo">
+<nav th:replace="fragments :: navigation" ></nav>
+<h1 th:replace= "fragments :: styledHeader"></h1>
+<h2> Article Options </h2>
+<form action="news" method="post" id="formNews" name="formNews">
+
+    <button type="submit" form="formNews" name="userAction" value="rOpenings" class="btn btn-primary" >Restaurant Openings</button>
+    <button type="submit" form="formNews" name="userAction" value="reviews" class="btn btn-primary" >Reviews</button>
+    <button type="submit" form="formNews" name="userAction" value="beerNews" class="btn btn-primary" >Craft Beer News</button>
+    <button type="submit" form="formNews" name="userAction" value="wineNews" class="btn btn-primary" >Wine News</button>
+</form>
+<div class="galleryContainer" >
+<th:block id="articlesShowing" th:each="article: ${allArticles}" class="form-group">
+    <div class="galleryItem">
+        <a th:href="${article.href}">
+        <img th:src="${article.imageSrc}" width="600" height="400">
+        <h6 th:text="${article.title}"></h6>
+        </a>
+    </div>
+
+</th:block>
+</div>
+</body>
+</html>
