@@ -30,6 +30,7 @@
         <div th:if="${userPlacesTagDTO.tagsToAdd} and ${userPlacesTagDTO.tagsToAdd.size()}">
             <input type="submit" value="Add Tags!" class="btn btn-primary">
         </div>
+
         <p th:unless="${userPlacesTagDTO.tagsToAdd} and ${userPlacesTagDTO.tagsToAdd.size()}">It appears that you don't have any tags yet. Create some!</p>
 
     </div>

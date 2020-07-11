@@ -71,8 +71,8 @@ public class UtilitiesService {
                     }
                 }
         }catch(NullPointerException e){
-            e.printStackTrace();
-            System.out.println("UserPlaces is null***");
+//            e.printStackTrace();
+//            System.out.println("UserPlaces is null***");
         }
         return userPlacesByUser;
     }

@@ -88,9 +88,8 @@ public class UtilitiesServiceTest {
         try{
         when(userPlacesDAO.findAll()).thenThrow(new NullPointerException());
         } catch (NullPointerException e) {
-            e.printStackTrace();
+         //   e.printStackTrace();
         }
-
         List<UserPlaces> upsList = utilitiesService.findUserPlaces(user);
         Assertions.assertNotNull(upsList);
         Assertions.assertEquals(0, upsList.size());

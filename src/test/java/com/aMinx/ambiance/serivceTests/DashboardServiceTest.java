@@ -39,8 +39,7 @@ public class DashboardServiceTest {
 
     @Mock
     Tag tag;
-
-
+    
     @BeforeEach
     public void init() {
         MockitoAnnotations.initMocks(this);

@@ -86,23 +86,25 @@ public class SearchMapController {
         List <Tag> tagsToAdd = user.getTags();
         userPlacesTagDTO.setTagsToAdd(tagsToAdd);
         model.addAttribute("userPlacesTagDTO", userPlacesTagDTO);
-        model.addAttribute("title", "Add Tags to "+ place.getName());
+        model.addAttribute("title", "Add Tags to " + place.getName());
+
         return "places/addTags";
     }
 
 
-    @PostMapping ("places/addTags")
+    @PostMapping ("places/addTags/{placeId}")
     public String processAddTags(@ModelAttribute @Valid UserPlacesTagDTO userPlacesTagDTO,
                                  @RequestParam(value = "tagIds", required = false) int [] tagIds,
                                  Errors errors, Model model) {
         if(errors.hasErrors()){
             model.addAttribute(userPlacesTagDTO);
-            return "places/addTags";
+            return "redirect:/places/addTags/"+userPlacesTagDTO.getUserPlaces().getPlace().getId();
         }
         if (tagIds != null) {
             searchMapService.setTagsInUserPlacesTagDTO(userPlacesTagDTO, tagIds);
+
         }else{
-            return "places/addTags";
+            return "redirect:/places/addTags/"+userPlacesTagDTO.getUserPlaces().getPlace().getId();
         }
         searchMapService.saveTagsToSelectedUserPlaces(userPlacesTagDTO);
         return "redirect:/user/dashboard";

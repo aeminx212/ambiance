@@ -12,6 +12,7 @@
 <img th:replace= "fragments :: logo">
 <nav th:replace="fragments :: navigation" ></nav>
 <h1 th:replace= "fragments :: styledHeader"></h1>
+<a th:href="@{../places/searchMap}" class="form-group">Add A New Place By Searching</a>
 <p>Click a marker to get more info. Click the map to reposition and see all of your markers again.</p>
 <div id="map"></div>
 <script>
@@ -208,7 +209,7 @@
 </script>
 
 <script async defer
-        src="https://maps.googleapis.com/maps/api/js?key={YOUR GOOGLE MAPS KEY}&libraries=places,geometry&callback=initMap">
+        src="https://maps.googleapis.com/maps/api/js?key={ Your Key }&libraries=places,geometry&callback=initMap">
 </script>
 
 </body>

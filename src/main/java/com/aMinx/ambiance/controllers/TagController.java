@@ -84,8 +84,7 @@ public class TagController {
                                         @RequestParam (required = false )int [] placeIds, Model model){
         String page ="";
         if(tagIds == null || placeIds== null){
-            model.addAttribute("title", "Please review your selections.");
-            page = "tags/addTagsToPlaces";
+            page = "redirect:tags/addTagsToPlaces";
 
         }else{
 

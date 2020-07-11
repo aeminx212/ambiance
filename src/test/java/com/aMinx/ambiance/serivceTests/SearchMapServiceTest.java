@@ -69,7 +69,7 @@ public class SearchMapServiceTest {
         try{
             when(utilitiesService.findUserPlaces(user)).thenThrow(new NullPointerException());
         } catch (NullPointerException e) {
-            e.printStackTrace();
+           // e.printStackTrace();
         }
         boolean inUserPlaces = searchMapService.isInUserPlaces(user, name, numLat, numLng);
         Assertions.assertNotNull(inUserPlaces);
@@ -112,7 +112,7 @@ public class SearchMapServiceTest {
         try{
             when(placeDAO.findAll()).thenThrow(new NullPointerException());
         } catch (NullPointerException e) {
-            e.printStackTrace();
+           // e.printStackTrace();
         }
         Place aPlace = searchMapService.addPlaceToUserPlaces(user, name, numLat, numLng, url, phone);
         Assertions.assertNotNull(aPlace);

@@ -40,8 +40,8 @@ public class SearchMapService {
                 }
             }
         }catch (NullPointerException e){
-            e.printStackTrace();
-            System.out.println("UserPlaces null");
+//            e.printStackTrace();
+//            System.out.println("UserPlaces null");
         }
         return false;
     }
@@ -49,6 +49,10 @@ public class SearchMapService {
     public Place addPlaceToUserPlaces(User user, String name, String numLat, String numLng, String url, String phone) {
         Place place = new Place();
         int count = 0;
+//        if(placeDAO.findAll().equals(null)){
+//            place = createNewPlace(name, numLat, numLng, url, phone);
+//            createNewUserPlaces(user, place);
+//        }
         try {
             Iterable<Place> placeList = placeDAO.findAll();
             Iterator<Place> placeIterator = placeList.iterator();
@@ -71,8 +75,8 @@ public class SearchMapService {
                 createNewUserPlaces(user, place);
             }
         } catch (NullPointerException e) {
-            e.printStackTrace();
-            System.out.println("Places List is null");
+//            e.printStackTrace();
+//            System.out.println("Places List is null");
             place = createNewPlace(name, numLat, numLng, url, phone);
             createNewUserPlaces(user, place);
         }
