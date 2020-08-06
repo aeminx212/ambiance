@@ -1,7 +1,9 @@
-# ambiance
+# Ambiance
 Ambiance uses Google Maps to help you remember places that you want to checkout or favorite spots that might accidentally slip your mind. Our experiences are what makes us. Find yourself where you want to be. 
 
-This web app was created using Spring, Hibernate, MySQL, Bootstrap, and Google Maps API. 
+This web app was created using Spring, Hibernate, MySQL, Bootstrap, and Google Maps API.
+
+https://docs.google.com/presentation/d/10b0GZaMA3aRvB8mdG5BAAyJysVxudQaoR0LQ1xhfaIs/edit?usp=sharing
 
 ## Getting Started
 
