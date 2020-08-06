@@ -3,7 +3,11 @@ Ambiance uses Google Maps to help you remember places that you want to checkout 
 
 This web app was created using Spring, Hibernate, MySQL, Bootstrap, and Google Maps API.
 
+Link to app presentation-
 https://docs.google.com/presentation/d/10b0GZaMA3aRvB8mdG5BAAyJysVxudQaoR0LQ1xhfaIs/edit?usp=sharing
+
+Check out the app-
+https://ambiance-app.com/
 
 ## Getting Started
 
@@ -13,5 +17,5 @@ If you are looking to check out somewhere new, then navigate to “The Latest Ne
 
 ### Prerequisites
 
-To run this you will need your own Google Maps key.
+To run this code you will need your own Google Maps key.
 
